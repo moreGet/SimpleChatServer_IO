@@ -13,7 +13,7 @@ import ch.get.contoller.ComponentController;
 import ch.get.view.RootLayoutController;
 import javafx.scene.control.TextArea;
 
-public class Client extends Thread {
+public class Client implements Runnable {
 	
 	private TextArea mainLog;
 	private Socket socket;
@@ -53,6 +53,11 @@ public class Client extends Thread {
 			
 			while (true) {
 				payLoad = br.readLine();
+				
+				if (payLoad == null) {
+					throw new IOException();
+				}
+				
 				payLoadElem = payLoad.split(ServerSplitCode.SPLIT.getCode());
 				ComponentController.printServerLog(mainLog, "[ " + clientId + " ]" + " SERVER CODE : [" + payLoadElem[0] + "] CONTENS : [ " + payLoadElem[1] + " ]");
 				
@@ -78,11 +83,8 @@ public class Client extends Thread {
 				}
 			}
 		} catch (IOException e) {
-			String msg = this.nickName + " 님이 채팅을 종료 하셨습니다.";
-			
-			ComponentController.printServerLog(
-					RootLayoutController.getInstance().getMainLogTextArea(), msg);
-			doSendMessage(msg);
+			// 접속 종료
+			ComponentController.printServerLog(mainLog, "[ " + clientId + " ]" + " 강제 종료...");
 			doQuit();
 		}
 	}

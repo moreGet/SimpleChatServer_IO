@@ -3,6 +3,8 @@ package ch.get.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import ch.get.contoller.ComponentController;
 import ch.get.model.Client;
@@ -13,12 +15,15 @@ import ch.get.view.RootLayoutController;
 import javafx.scene.control.TextArea;
 
 public class ServerInstance extends Thread {
+	private ExecutorService ex;
 	private ServerSocket serverSocket;
 	private RootLayoutController rootLayoutController;
 	private TextArea mainLog;
 	private boolean serverStatus;
 	
 	public ServerInstance() {
+		ex = Executors.newFixedThreadPool(
+				Runtime.getRuntime().availableProcessors());
 		rootLayoutController = RootLayoutController.getInstance();
 		mainLog = rootLayoutController.getMainLogTextArea();
 		serverStatus = true;
@@ -47,8 +52,9 @@ public class ServerInstance extends Thread {
 			}
 			
 			serverSocket.close();
+			ex.shutdown();
 		} catch (IOException e) {
-			System.out.println("서버 종료");
+			LoggerUtil.error(e.getMessage());
 		}
 	}
 	
@@ -65,9 +71,8 @@ public class ServerInstance extends Thread {
 				String clientId = UuidUtil.getUuid();
 				Client client = new Client(socket, clientId);
 				ClientBucket.getClientBucket().put(clientId, client); // 명시적 자료형 반환
-				client.setDaemon(true);
-				client.start();
-				ComponentController.printServerLog(mainLog, "CLIENT SOCKET CONNECTED...");
+				ex.submit(client); // 쓰레드 풀
+				LoggerUtil.info("CLIENT SOCKET CONNECTED...[ " + clientId + " ]");
 			}
 		} catch (IOException e) {
 			ComponentController.printServerLog(mainLog, "서버 종료...");
