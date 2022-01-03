@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 
 import ch.get.common.ServerSplitCode;
 import ch.get.contoller.ComponentController;
+import ch.get.util.LoggerUtil;
 import ch.get.view.RootLayoutController;
 import javafx.scene.control.TextArea;
 
@@ -60,6 +61,7 @@ public class Client implements Runnable {
 				
 				payLoadElem = payLoad.split(ServerSplitCode.SPLIT.getCode());
 				ComponentController.printServerLog(mainLog, "[ " + clientId + " ]" + " SERVER CODE : [" + payLoadElem[0] + "] CONTENS : [ " + payLoadElem[1] + " ]");
+				LoggerUtil.info("[ " + clientId + " ]" + "[ " + Thread.currentThread().getName() + " ]");
 				
 				cmd = Integer.parseInt(payLoadElem[0]);
 				msg = payLoadElem[1];
@@ -68,12 +70,12 @@ public class Client implements Runnable {
 				case 0:
 					// JOIN
 					doJoin(msg);
-					doSendMessage("[ " + msg + " ] 님이 채팅방에 접속 하셨습니다.");
+					doSendMessage("[ " + this.nickName + " ] 님이 채팅방에 접속 하셨습니다.");
 					ComponentController.printServerLog(mainLog, "[ " + clientId + " ]" + " NICK_NAME : " + msg);
 					break;
 				case 1:
 					// QUIT
-					doSendMessage(" 님이 채팅을 종료 하셨습니다.");
+					doSendMessage("[ " + this.nickName + " ] 님이 채팅을 종료 하셨습니다.");
 					doQuit();
 					break;
 				default:
@@ -102,7 +104,7 @@ public class Client implements Runnable {
 			.parallelStream() // 병렬 처리
 			.filter(clientElem -> {return !clientElem.getKey().equals(this.clientId);})
 			.forEach(clientElem -> {
-				clientElem.getValue().getPw().println(this.nickName + " : " + msg);
+				clientElem.getValue().getPw().println(msg);
 			});
 		}
 	}
