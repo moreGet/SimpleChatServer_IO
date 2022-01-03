@@ -1,10 +1,8 @@
 package ch.get.contoller;
 
 import java.lang.ref.WeakReference;
-import java.util.Optional;
 
 import ch.get.util.DateUtil;
-import ch.get.view.RootLayoutController;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;

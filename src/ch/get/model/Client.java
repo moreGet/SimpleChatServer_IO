@@ -6,15 +6,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import ch.get.common.ServerSplitCode;
 import ch.get.contoller.ComponentController;
 import ch.get.view.RootLayoutController;
+import javafx.scene.control.TextArea;
 
 public class Client extends Thread {
 	
+	private TextArea mainLog;
 	private Socket socket;
 	private String clientId;
 	private String nickName;
@@ -29,6 +30,7 @@ public class Client extends Thread {
 	private PrintWriter pw;
 	
 	public Client(Socket socket, String clientId) {
+		this.mainLog = RootLayoutController.getInstance().getMainLogTextArea();
 		this.socket = socket;
 		this.clientId = clientId;
 	}
@@ -40,26 +42,34 @@ public class Client extends Thread {
 			br = new BufferedReader(isr);
 			
 			osw = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
-			pw = new PrintWriter(osw);
+			pw = new PrintWriter(osw, true);
 			
-			String[] payLoad;
+			String payLoad;
+			String[] payLoadElem;
 			Integer cmd;
 			String msg;
 			
+			ComponentController.printServerLog(mainLog, "[ " + clientId + " ]" + " SOCKET : " + socket.isConnected());
+			
 			while (true) {
-				payLoad = br.readLine().split(ServerSplitCode.SPLIT.getCode());
-				cmd = Integer.parseInt(payLoad[0]);
-				msg = payLoad[1];
+				payLoad = br.readLine();
+				payLoadElem = payLoad.split(ServerSplitCode.SPLIT.getCode());
+				ComponentController.printServerLog(mainLog, "[ " + clientId + " ]" + " SERVER CODE : [" + payLoadElem[0] + "] CONTENS : [ " + payLoadElem[1] + " ]");
+				
+				cmd = Integer.parseInt(payLoadElem[0]);
+				msg = payLoadElem[1];
 				
 				switch (cmd.intValue()) {
 				case 0:
 					// JOIN
-					doSendMessage(" 님이 채팅방에 접속 하셨습니다.");
+					doJoin(msg);
+					doSendMessage("[ " + msg + " ] 님이 채팅방에 접속 하셨습니다.");
+					ComponentController.printServerLog(mainLog, "[ " + clientId + " ]" + " NICK_NAME : " + msg);
 					break;
 				case 1:
 					// QUIT
-					doQuit();
 					doSendMessage(" 님이 채팅을 종료 하셨습니다.");
+					doQuit();
 					break;
 				default:
 					// SEND
@@ -77,21 +87,25 @@ public class Client extends Thread {
 		}
 	}
 	
+	private void doJoin(String nickName) {
+		this.nickName = nickName;
+	}
+	
 	private void doSendMessage(String msg) {
-		ComponentController.printServerLog(
-				RootLayoutController.getInstance().getMainLogTextArea(), msg);
+		int bucketSize = ClientBucket.getClientBucket().size();
 		
-		if (ClientBucket.getClientBucket().size() >= 1) {
+		if (bucketSize >= 1) {
 			ClientBucket.getClientBucket()
 			.entrySet()
 			.parallelStream() // 병렬 처리
+			.filter(clientElem -> {return !clientElem.getKey().equals(this.clientId);})
 			.forEach(clientElem -> {
 				clientElem.getValue().getPw().println(this.nickName + " : " + msg);
-			});	
+			});
 		}
 	}
 	
-	private void doQuit() {
+	public void doQuit() {
 		ClientBucket.getClientBucket().remove(this.clientId);
 	}
 	
@@ -114,5 +128,9 @@ public class Client extends Thread {
 	// 쓰기
 	public PrintWriter getPw() {
 		return pw;
+	}
+	
+	public Socket getSocket() {
+		return socket;
 	}
 }

@@ -14,6 +14,6 @@
       </AnchorPane>
    </bottom>
    <center>
-      <TextArea fx:id="mainLogTextArea" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <TextArea fx:id="mainLogTextArea" prefHeight="200.0" prefWidth="200.0" wrapText="true" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

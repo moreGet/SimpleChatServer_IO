@@ -15,7 +15,7 @@ public class MainApp extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
-		primaryStage.setTitle("간단한 채팅 서버 v0.1");
+		primaryStage.setTitle("간단한 채팅 서버 v1.0");
 		primaryStage.setWidth(600);
 		primaryStage.setHeight(450);
 		primaryStage.setResizable(false);
@@ -41,7 +41,7 @@ public class MainApp extends Application {
 			Scene scene = new Scene(borderPane);
 			this.primaryStage.setScene(scene);
 			
-			LoggerUtil.info("메인 레이아웃 불러오기...");
+			LoggerUtil.info("서버...");
 		} catch (Exception e) {
 			LoggerUtil.error(e.getMessage());
 		}
