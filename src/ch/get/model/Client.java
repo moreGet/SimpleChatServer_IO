@@ -80,7 +80,7 @@ public class Client implements Runnable {
 					break;
 				default:
 					// SEND
-					doSendMessage(msg);
+					doSendMessage(this.nickName + " : " + msg);
 					break;
 				}
 			}
