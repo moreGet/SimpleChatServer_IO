@@ -21,7 +21,7 @@ public class Client implements Runnable {
 	private String clientId;
 	private String nickName;
 	
-	/*
+	/**
 	 * INIT SOCKET I/O
 	 */
 	private InputStreamReader isr;
@@ -54,7 +54,7 @@ public class Client implements Runnable {
 			
 			while (true) {
 				payLoad = br.readLine();
-				
+
 				if (payLoad == null) {
 					throw new IOException();
 				}

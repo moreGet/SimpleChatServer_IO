@@ -42,13 +42,15 @@ public class ServerInstance extends Thread {
 				.forEach(clientElem -> {
 					Client client = clientElem.getValue();
 					client.getPw().println("서버가 종료 되었습니다.");
-					client.doQuit();
 					try {
 						client.getSocket().close();
 					} catch (IOException e) {
 						System.out.println("클아이언트 접속 해제...");
 					}
 				});
+				
+				// CLEAR
+				ClientBucket.getClientBucket().clear();
 			}
 			
 			serverSocket.close();
