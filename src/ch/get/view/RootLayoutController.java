@@ -28,7 +28,7 @@ public class RootLayoutController implements Initializable {
 	}
 	
 	@FXML
-	private void runServer() {
+	public void runServer() {
 		if (!sevInitSw) { // 서버가 동작 중이지 않으면
 			sevInitSw = true;
 			

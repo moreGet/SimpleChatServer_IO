@@ -1,12 +1,15 @@
 package ch.get;
 
 import ch.get.util.LoggerUtil;
+import ch.get.view.RootLayoutController;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 public class MainApp extends Application {
 	
@@ -20,6 +23,14 @@ public class MainApp extends Application {
 		primaryStage.setHeight(450);
 		primaryStage.setResizable(false);
 		primaryStage.initStyle(StageStyle.UTILITY);
+		
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			
+			@Override
+			public void handle(WindowEvent event) {
+				RootLayoutController.getInstance().runServer();
+			}
+		});
 		
 		// 메인 레이아웃
 		initMain();
