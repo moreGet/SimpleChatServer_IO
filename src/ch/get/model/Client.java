@@ -78,6 +78,13 @@ public class Client implements Runnable {
 					doSendMessage("[ " + this.nickName + " ] 님이 채팅을 종료 하셨습니다.");
 					doQuit();
 					break;
+				case 2:
+					// NICK
+					String oldValue = this.nickName;
+					doJoin(msg);
+					String newValue = this.nickName;
+					doSendMessage("[ " + oldValue + " ] 님이 닉네임을 변경 하셨습니다. -> " + "[ " + newValue + " ]");
+					break;
 				default:
 					// SEND
 					doSendMessage(this.nickName + " : " + msg);

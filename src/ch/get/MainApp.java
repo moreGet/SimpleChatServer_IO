@@ -18,7 +18,7 @@ public class MainApp extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
-		primaryStage.setTitle("간단한 채팅 서버 v1.0");
+		primaryStage.setTitle("간단한 채팅 서버 v1.1");
 		primaryStage.setWidth(600);
 		primaryStage.setHeight(450);
 		primaryStage.setResizable(false);
