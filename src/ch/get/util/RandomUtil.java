@@ -3,11 +3,9 @@ package ch.get.util;
 import java.util.Random;
 
 public class RandomUtil {
+	private static Random random = new Random();
 	
-	private static Random random = new Random(); 
-	
-	public static int getRandomValue(int min, int max) {
-		int n = random.nextInt((max - min) + 1) % max;
-		return min + n;
+	public static int getRandom(int min, int max) {
+		return random.nextInt((max-min)) + min;
 	}
 }
