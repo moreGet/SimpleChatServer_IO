@@ -41,7 +41,7 @@ public class ServerInstance extends Thread {
 				.parallelStream() // 병렬 처리
 				.forEach(clientElem -> {
 					Client client = clientElem.getValue();
-					client.getPw().println("서버가 종료 되었습니다.");
+//					client.getPw().println("서버가 종료 되었습니다.");
 					try {
 						client.getSocket().close();
 					} catch (IOException e) {

@@ -75,7 +75,7 @@ public class Client implements Runnable {
 					break;
 				case 1:
 					// QUIT
-					doSendMessage("[ " + this.nickName + " ] 님이 채팅을 종료 하셨습니다.");
+//					doSendMessage("[ " + this.nickName + " ] 님이 채팅을 종료 하셨습니다.");
 					doQuit();
 					break;
 				case 2:
@@ -93,6 +93,7 @@ public class Client implements Runnable {
 			}
 		} catch (IOException e) {
 			// 접속 종료
+			doSendMessage("[ " + this.nickName + " ] 님이 채팅을 종료 하셨습니다.");
 			ComponentController.printServerLog(mainLog, "[ " + clientId + " ]" + " 강제 종료...");
 			doQuit();
 		}
@@ -117,7 +118,14 @@ public class Client implements Runnable {
 	}
 	
 	public void doQuit() {
-		ClientBucket.getClientBucket().remove(this.clientId);
+		try {
+			if (socket != null || !socket.isClosed()) {
+				socket.close();
+				ClientBucket.getClientBucket().remove(this.clientId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void setNickName(String nickName) {
